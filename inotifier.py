@@ -2,13 +2,14 @@ import inotify.adapters
 from os import path
 from twisted.python.filepath import FilePath
 from humanReadableMask import InotifyMask
-
+import datetime
 
 class InotifyEvent(object):
     def __init__(self, mask, file_changed, watch_path):
-        self.mask = mask
-        self.file_changed = file_changed
-        self.watch_path = watch_path
+        self.mask = InotifyMask(mask)
+        self.file_changed = FilePath(file_changed)
+        self.watch_path = FilePath(watch_path)
+        self.time = datetime.datetime.now()
 
 class InotifyFileMonitorBase(object):
     def __init__(self, initial_watch_path='.'):
@@ -47,13 +48,10 @@ class InotifyFileMonitorBase(object):
             for base_event in self.i.event_gen():
                 if base_event is not None:
                     (header, type_names, watch_path, filename) = base_event
-                    mask = InotifyMask(header.mask)
-                    file_path = FilePath(path.join(watch_path, filename))
-
-
+                    mask = header.mask
+                    file_path = path.join(watch_path, filename)
                     inotify_event = InotifyEvent(mask,file_path, watch_path)
-
-                    self.allEvents(inotify_event)
+                    self._allEventsPrivate(inotify_event)
 
                     #print mask.mask
                     #print mask.readable_mask
@@ -63,11 +61,13 @@ class InotifyFileMonitorBase(object):
         finally:
             self.i.remove_watch('./test')
 
-    def allEvents(self, inotify_event):
-        #print inotify_event.mask.readable_mask
+    def _allEventsPrivate(self, inotify_event):
         for r in inotify_event.mask.readable_mask:
+            self.allEvents(inotify_event)
             self._event_method_dict[r](inotify_event)
 
+    def allEvents(self, inotify_eveent):
+        pass
 
 
     def On_IN_ACCESS(self, inotify_event):

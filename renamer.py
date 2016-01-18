@@ -1,141 +1,110 @@
-#!/usr/bin/env python
-
-from twisted.internet import inotify
+from inotifier import InotifyFileMonitorBase
+from isFileOpen import monitorIsFileOpen, isFileOpen
 from twisted.python import filepath
-from twisted.internet import reactor
 import os
-import shutil
-import datetime
 import sys
 
-intoify_tags = {1: 'IN_ACCESS', 2: 'IN_MODIFY', 4: 'IN_ATTRIB', 8: 'IN_CLOSE_WRITE', 16: 'IN_CLOSE_NOWRITE', 32: 'IN_OPEN', 64: 'IN_MOVED_FROM', 128: 'IN_MOVED_TO', 256: 'IN_CREATE', 512: 'IN_DELETE', 1024: 'IN_DELETE_SELF', 8192: 'IN_UNMOUNT', 16384: 'IN_Q_OVERFLOW', 32768: 'IN_IGNORED',  1073741824: 'IN_ISDIR', 2147483648: 'IN_ONESHOT' }
-"""
-class FileSystemWatcher(object):
+sep = '---'
 
-  def __init__(self, path_to_watch):
-    self.path = path_to_watch
-    self.masks = {1: 'IN_ACCESS', 2: 'IN_MODIFY', 4: 'IN_ATTRIB', 8: 'IN_CLOSE_WRITE', 16: 'IN_CLOSE_NOWRITE', 32: 'IN_OPEN', 64: 'IN_MOVED_FROM', 128: 'IN_MOVED_TO', 256: 'IN_CREATE', 512: 'IN_DELETE', 1024: 'IN_DELETE_SELF', 8192: 'IN_UNMOUNT', 16384: 'IN_Q_OVERFLOW', 32768: 'IN_IGNORED',  1073741824: 'IN_ISDIR', 2147483648: 'IN_ONESHOT' }
-"""
-class FileSystemWatcher(object):
+event_log_dict = {}
 
-	def __init__(self, path_to_watch):
-		self.path = path_to_watch
-		self.inotify_list = []
-		
-		self.masks = {1: 'IN_ACCESS', 2: 'IN_MODIFY', 4: 'IN_ATTRIB', 8: 'IN_CLOSE_WRITE', 16: 'IN_CLOSE_NOWRITE', 32: 'IN_OPEN', 64: 'IN_MOVED_FROM', 128: 'IN_MOVED_TO', 256: 'IN_CREATE', 512: 'IN_DELETE', 1024: 'IN_DELETE_SELF', 8192: 'IN_UNMOUNT', 16384: 'IN_Q_OVERFLOW', 32768: 'IN_IGNORED',  1073742080: 'IN_ISDIR', 2147483648: 'IN_ONESHOT' }
-		self.created_times = {}
-		self.create_list = []
-		self.moved_to_list = []
-		self.attrib_list = []
-		self.name_changed_list = []
-	def Start(self):
-		notifier = inotify.INotify()
-		notifier.startReading()
-		notifier.watch(filepath.FilePath(self.path),
-                   callbacks=[self.OnChange],autoAdd=True,recursive=True)
+created_dict = {}
 
-	def OnChange(self, watch, path, mask):
-		
-		if path.exists():
-			try:
-				inode = path.getInodeNumber()
-			except:
-				inode = 0
-		else:
-			inode = 0
-			
-		t = datetime.datetime.today()
-		date_time = str(t.year) + '-' + str(t.month) + '-' +  str(t.day) + '---' +  str(t.hour) + ':' +  str(t.minute) + ':' +  str(t.second)
-		date_time = str(date_time)
-		
-		extension = os.path.splitext(path.path)[1]
-		
-		basename = path.basename()
-		
-		dirname = path.dirname()
-		
-		mask_trans = self.masks[mask]
-		
-		info = {'inode':inode, 'path':path.path, 'dirname':dirname, 'extension':extension, 'basename':basename, 'mask':mask, 'mask_trans':mask_trans, 'date_time':date_time}
-		
-		self.inotify_list.append(info)
-		
-		#if info['mask_trans'] is not "IN_MODIFY":
-		#	print info['mask_trans']
-		
-		if mask_trans == 'IN_CREATE':
-			self.OnCreate(info)
-			
-		if mask_trans == 'IN_MOVED_TO':
-			self.OnMovedTo(info)
-		
-		if mask_trans == 'IN_ATTRIB':
-			self.OnAttrib(info)
-			
-		
-			
-		'''
-		if self.masks[mask] is not 'IN_MODIFY':
-			
-			if self.masks[mask] == 'IN_CREATE':
-				self.created_times[inode] = date_time			
+closed_write_list = []
 
-					
-			info = (inode, path.path, dirname, extension, basename, mask, mask_trans, date_time,  )
-			print info
-			self.inotify_list.append(info)
-		'''
-	def OnCreate(self, info):
-		inode = info['inode']
-		date_time = info['date_time']
-		self.create_list.append(inode)
-		
-		self.created_times[inode] = date_time
-			
-	def OnMovedTo(self, info):
-		self.moved_to_list.append(info['inode'])
-		
-	def OnAttrib(self, info):
-		self.attrib_list.append(info)
-		
-		
-		if info['inode'] in self.create_list:
-			in_create_list = True
-		else:
-			in_create_list = False
-		#print "in_create_list is " + str(in_create_list)
-		
-		'''
-		if info['inode'] in self.moved_to_list:
-			in_moved_to_list = True
-		else:
-			in_moved_to_list = False
-		print "in_moved_to_list is " + str(in_create_list)
-		'''
-		
-		#if in_create_list and in_moved_to_list:
-		if in_create_list:
-			self.Change_Name(info)
-			
-	def Change_Name(self, info):
-		if info['inode'] not in self.name_changed_list:
-			old_basename = info['basename']
-			#old_base = os.path.splitext(old_name)[0]
-			#old_extension = info['extension']
-			new_basename = self.created_times[info['inode']] + '---' + old_basename
-			old_name = os.path.join(info['dirname'], old_basename)
-			new_name = os.path.join(info['dirname'], new_basename)
-			shutil.move(old_name,new_name)
-			self.name_changed_list.append(info['inode'])
-			#print "renamed " + old_basename + " to " + new_basename
-		
+changed_list = []
+
+def log_inotify_event(inotify_event):
+    global event_log_dict
+    file_changed = inotify_event.file_changed.path
+    if inotify_event.file_changed.exists():
+        inode_changed = inotify_event.file_changed.getInodeNumber()
+    else:
+        inode_changed = None
+    type_of_change = inotify_event.mask.readable_mask[0]
+    if inode_changed in event_log_dict:
+        event_log_dict[inode_changed].append((file_changed,type_of_change))
+    else:
+        event_log_dict[inode_changed] = []
+        event_log_dict[inode_changed].append((file_changed,type_of_change))
+
+    #print event_log_dict
+
+
+
+
+class Renamer(InotifyFileMonitorBase):
+    #def __init__(self, initial_watch_path):
+        #sep = '---'
+        #super(Renamer, self).__init__()
+
+    def allEvents(self, inotify_event):
+        if inotify_event.file_changed.exists():
+            log_inotify_event(inotify_event)
+
+    def On_IN_CREATE(self, inotify_event):
+        #log_inotify_event(inotify_event)
+        sep = '---'
+
+        created_dict[inotify_event.file_changed.getInodeNumber()] = \
+        str(inotify_event.time.year) + '-' + \
+        str(inotify_event.time.month) + '-' + \
+        str(inotify_event.time.day) + '---' + \
+        str(inotify_event.time.hour) + '-' + \
+        str(inotify_event.time.minute) + '-' + \
+        str(inotify_event.time.second)
+
+        #print created_dict
+
+    def On_IN_CLOSE_WRITE(self, inotify_event):
+        if inotify_event.file_changed.exists():
+            closed_write_list.append(inotify_event.file_changed.getInodeNumber())
+
+    def On_IN_MOVED_FROM(self, inotify_event):
+        #log_inotify_event(inotify_event)
+        pass
+    def On_IN_MOVED_TO(self, inotify_event):
+        #log_inotify_event(inotify_event)
+        pass
+    def On_IN_ATTRIB(self, inotify_event):
+        if inotify_event.file_changed.exists():
+            inode_num = inotify_event.file_changed.getInodeNumber()
+            if inode_num not in changed_list:
+                if '---' not in inotify_event.file_changed.path:
+                    t = True
+
+                    file_name = inotify_event.file_changed.path
+
+                    if inode_num not in changed_list:
+                        while t:
+                            if isFileOpen(file_name) == False:
+                                self.rename(file_name, created_dict[inode_num])
+                                return
+
+
+    def change(self, inotify_event):
+        pass
+
+    def rename(self, file_name, created_time_string):
+        file_name = filepath.FilePath(file_name)
+        b_name = file_name.basename()
+        par = file_name.parent()
+        new_path = filepath.FilePath(par.path + '/' + created_time_string + sep + b_name)
+
+        os.rename(file_name.path, new_path.path)
+
+        print file_name.path
+        print new_path.path
+        if new_path.exists():
+            changed_list.append(new_path.getInodeNumber())
+
+
+
+
+def main(folder_to_monitor):
+    fm = Renamer(folder_to_monitor)
 
 
 if __name__ == '__main__':
-	if len(sys.argv) > 1:
-		dir_watch = str(sys.argv[1])
-	else:
-		dir_watch = '/home/me/Downloads/'
-	fs = FileSystemWatcher(dir_watch)
-	fs.Start()
-	reactor.run()
+
+    main(sys.argv[1])
