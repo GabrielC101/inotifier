@@ -135,7 +135,7 @@ if __name__ == '__main__':
 	if len(sys.argv) > 1:
 		dir_watch = str(sys.argv[1])
 	else:
-		dir_watch = '/home/me/Downloads'
+		dir_watch = '/home/me/Downloads/'
 	fs = FileSystemWatcher(dir_watch)
 	fs.Start()
 	reactor.run()
