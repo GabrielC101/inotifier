@@ -6,7 +6,7 @@ import datetime
 
 from twisted.python.filepath import FilePath
 
-from autorenamer.masks import InotifyMask
+from inotifier.masks import InotifyMask
 
 
 class InotifyEvent(object):

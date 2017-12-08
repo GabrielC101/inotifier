@@ -1,10 +1,10 @@
 from __future__ import absolute_import, print_function
 
-
-import inotify.adapters
 from os import path
 
-from autorenamer.events import InotifyEvent
+import inotify.adapters
+
+from inotifier.events import InotifyEvent
 
 
 class InotifierBase(object):
