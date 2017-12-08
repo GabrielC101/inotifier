@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 from __future__ import absolute_import, print_function
-from os import path, walk, stat
+
+from os import walk, stat, path
 from os.path import abspath, join
 
 
@@ -20,4 +21,3 @@ def lookup_inode(inode, rootdir='.'):
             ap_inode = stat(absolute_path).st_ino
             if inode == ap_inode:
                 return absolute_path
-

@@ -1,5 +1,5 @@
 from inotifier import InotifyFileMonitorBase
-from is_file_open import monitor_is_file_open, is_file_open
+from is_file_open import is_file_open
 from twisted.python import filepath
 import os
 import sys
@@ -24,10 +24,10 @@ def log_inotify_event(inotify_event):
         inode_changed = None
     type_of_change = inotify_event.mask.readable_mask[0]
     if inode_changed in event_log_dict:
-        event_log_dict[inode_changed].append((file_changed,type_of_change))
+        event_log_dict[inode_changed].append((file_changed, type_of_change))
     else:
         event_log_dict[inode_changed] = []
-        event_log_dict[inode_changed].append((file_changed,type_of_change))
+        event_log_dict[inode_changed].append((file_changed, type_of_change))
 
 
 class Renamer(InotifyFileMonitorBase):
