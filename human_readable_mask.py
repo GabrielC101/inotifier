@@ -102,13 +102,15 @@ _FLAG_TO_HUMAN = [
     (IN_ONESHOT, 'one_shot')
 ]
 
+
 class InotifyMask(object):
+
     def __init__(self, mask):
         self.mask = mask
-        self.readable_mask = self.readableMask(self.mask)
-        self.human_readable_mask = self.humanReadableMask(self.mask)
+        self.readable_mask = self.readable_mask(self.mask)
+        self.human_readable_mask = self.human_readable_mask(self.mask)
 
-    def humanReadableMask(self, mask):
+    def human_readable_mask(self, mask):
         """
         Auxiliary function that converts an hexadecimal mask into a series
         of human readable flags.
@@ -119,7 +121,7 @@ class InotifyMask(object):
                 s.append(READABLE_DICT[MASK_DICT[k]])
         return s
 
-    def readableMask(self, mask):
+    def readable_mask(self, mask):
         """
         Auxiliary function that converts an hexadecimal mask into a series
         of human readable flags.
