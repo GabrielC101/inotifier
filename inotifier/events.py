@@ -4,7 +4,7 @@ from __future__ import absolute_import, print_function
 
 import datetime
 
-from twisted.python.filepath import FilePath
+from filepath import FilePath
 
 from inotifier.masks import InotifyMask
 

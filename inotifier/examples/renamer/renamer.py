@@ -5,7 +5,7 @@ from __future__ import absolute_import, print_function
 import os
 from sys import argv
 
-from twisted.python import filepath
+from filepath import FilePath
 
 from inotifier.inotifier import InotifierBase
 from inotifier.examples.renamer.utils import is_file_open
@@ -36,10 +36,10 @@ class RenamerBase(InotifierBase):
             self.event_log_dict[inode_changed].append((file_changed, type_of_change))
 
     def rename(self, file_name, created_time_string):
-        file_name = filepath.FilePath(file_name)
+        file_name = FilePath(file_name)
         b_name = file_name.basename()
         par = file_name.parent()
-        new_path = filepath.FilePath(par.path + '/' + created_time_string + self.sep + b_name)
+        new_path = FilePath(par.path + '/' + created_time_string + self.sep + b_name)
 
         os.rename(file_name.path, new_path.path)
 

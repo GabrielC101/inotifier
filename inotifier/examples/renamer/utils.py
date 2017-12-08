@@ -6,7 +6,7 @@ from os import walk, stat, path
 from os.path import abspath, join
 
 import psutil
-from twisted.python.filepath import FilePath
+from filepath import FilePath
 
 
 def lookup_inode(inode, rootdir='.'):
