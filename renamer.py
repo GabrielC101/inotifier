@@ -1,5 +1,5 @@
 from inotifier import InotifyFileMonitorBase
-from isFileOpen import monitorIsFileOpen, isFileOpen
+from is_file_open import monitor_is_file_open, is_file_open
 from twisted.python import filepath
 import os
 import sys
@@ -13,6 +13,7 @@ created_dict = {}
 closed_write_list = []
 
 changed_list = []
+
 
 def log_inotify_event(inotify_event):
     global event_log_dict
@@ -28,23 +29,14 @@ def log_inotify_event(inotify_event):
         event_log_dict[inode_changed] = []
         event_log_dict[inode_changed].append((file_changed,type_of_change))
 
-    #print event_log_dict
-
-
-
 
 class Renamer(InotifyFileMonitorBase):
-    #def __init__(self, initial_watch_path):
-        #sep = '---'
-        #super(Renamer, self).__init__()
 
-    def allEvents(self, inotify_event):
+    def all_events(self, inotify_event):
         if inotify_event.file_changed.exists():
             log_inotify_event(inotify_event)
 
-    def On_IN_CREATE(self, inotify_event):
-        #log_inotify_event(inotify_event)
-        sep = '---'
+    def on_IN_CREATE(self, inotify_event):
 
         created_dict[inotify_event.file_changed.getInodeNumber()] = \
         str(inotify_event.time.year) + '-' + \
@@ -54,19 +46,17 @@ class Renamer(InotifyFileMonitorBase):
         str(inotify_event.time.minute) + '-' + \
         str(inotify_event.time.second)
 
-        #print created_dict
-
-    def On_IN_CLOSE_WRITE(self, inotify_event):
+    def on_IN_CLOSE_WRITE(self, inotify_event):
         if inotify_event.file_changed.exists():
             closed_write_list.append(inotify_event.file_changed.getInodeNumber())
 
-    def On_IN_MOVED_FROM(self, inotify_event):
-        #log_inotify_event(inotify_event)
+    def on_IN_MOVED_FROM(self, inotify_event):
         pass
-    def On_IN_MOVED_TO(self, inotify_event):
-        #log_inotify_event(inotify_event)
+
+    def on_IN_MOVED_TO(self, inotify_event):
         pass
-    def On_IN_ATTRIB(self, inotify_event):
+
+    def on_IN_ATTRIB(self, inotify_event):
         if inotify_event.file_changed.exists():
             inode_num = inotify_event.file_changed.getInodeNumber()
             if inode_num not in changed_list:
@@ -77,10 +67,9 @@ class Renamer(InotifyFileMonitorBase):
 
                     if inode_num not in changed_list:
                         while t:
-                            if isFileOpen(file_name) == False:
+                            if is_file_open(file_name) == False:
                                 self.rename(file_name, created_dict[inode_num])
                                 return
-
 
     def change(self, inotify_event):
         pass
@@ -97,8 +86,6 @@ class Renamer(InotifyFileMonitorBase):
         print new_path.path
         if new_path.exists():
             changed_list.append(new_path.getInodeNumber())
-
-
 
 
 def main(folder_to_monitor):
