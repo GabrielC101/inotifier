@@ -3,8 +3,8 @@ clean-pyc:
 	find . -name '*.pyo' -exec rm --force {} +
 
 pip:
-	pip-compile requirements/requirements.in --output-file --update requirements/requirements.txt
-	pip-compile requirements/requirements-dev.in --output-file --update requirements/requirements-dev.txt
+	pip-compile --upgrade requirements/requirements.in --output-file  requirements/requirements.txt
+	pip-compile --upgrade requirements/requirements-dev.in --output-file  requirements/requirements-dev.txt
 
 clean-build:
 	rm --force --recursive build/
