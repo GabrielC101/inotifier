@@ -5,6 +5,7 @@ clean-pyc:
 pip:
 	pip-compile --upgrade requirements/requirements.in --output-file  requirements/requirements.txt
 	pip-compile --upgrade requirements/requirements-dev.in --output-file  requirements/requirements-dev.txt
+	pip-sync requirements/requirements-dev.txt
 
 clean-build:
 	rm --force --recursive build/
