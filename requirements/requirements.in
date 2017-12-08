@@ -1,4 +1,3 @@
 psutil
 inotify
 twisted
-ipython==5.5

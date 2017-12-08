@@ -1,48 +1,39 @@
+from __future__ import absolute_import, print_function
+
+
 import inotify.adapters
 from os import path
-from twisted.python.filepath import FilePath
-from human_readable_mask import InotifyMask
-import datetime
+
+from autorenamer.events import InotifyEvent
 
 
-class InotifyEvent(object):
-    def __init__(self, mask, file_changed, watch_path):
-        self.mask = InotifyMask(mask)
-        self.file_changed = FilePath(file_changed)
-        self.watch_path = FilePath(watch_path)
-        self.time = datetime.datetime.now()
-
-
-class InotifyFileMonitorBase(object):
+class InotifierBase(object):
     def __init__(self, initial_watch_path='.'):
 
-        #self.initial_watch_path = initial_watch_path
-
         self._event_method_dict ={
-        'IN_ACCESS':self.on_IN_ACCESS,
-        'IN_MODIFY':self.on_IN_MODIFY,
-        'IN_ATTRIB':self.on_IN_ATTRIB,
-        'IN_CLOSE_WRITE':self.on_IN_CLOSE_WRITE,
-        'IN_CLOSE_NOWRITE':self.on_IN_CLOSE_NOWRITE,
-        'IN_OPEN':self.on_IN_OPEN,
-        'IN_MOVED_FROM':self.on_IN_MOVED_FROM,
-        'IN_MOVED_TO':self.on_IN_MOVED_TO,
-        'IN_CREATE':self.on_IN_CREATE,
-        'IN_DELETE':self.on_IN_DELETE,
-        'IN_DELETE_SELF':self.on_IN_DELETE_SELF,
-        'IN_MOVE_SELF':self.on_IN_MOVE_SELF,
-        'IN_UNMOUNT':self.on_IN_UNMOUNT,
-        'IN_Q_OVERFLOW':self.on_IN_Q_OVERFLOW,
-        'IN_IGNORED':self.on_IN_IGNORED,
-        'IN_ONLYDIR':self.on_IN_ONLYDIR,
-        'IN_DONT_FOLLOW':self.on_IN_DONT_FOLLOW,
-        'IN_MASK_ADD':self.on_IN_MASK_ADD,
-        'IN_ISDIR':self.on_IN_ISDIR,
-        'IN_ONESHOT':self.on_IN_ONESHOT
+            'IN_ACCESS': self.on_IN_ACCESS,
+            'IN_MODIFY': self.on_IN_MODIFY,
+            'IN_ATTRIB': self.on_IN_ATTRIB,
+            'IN_CLOSE_WRITE': self.on_IN_CLOSE_WRITE,
+            'IN_CLOSE_NOWRITE': self.on_IN_CLOSE_NOWRITE,
+            'IN_OPEN': self.on_IN_OPEN,
+            'IN_MOVED_FROM': self.on_IN_MOVED_FROM,
+            'IN_MOVED_TO': self.on_IN_MOVED_TO,
+            'IN_CREATE': self.on_IN_CREATE,
+            'IN_DELETE': self.on_IN_DELETE,
+            'IN_DELETE_SELF': self.on_IN_DELETE_SELF,
+            'IN_MOVE_SELF': self.on_IN_MOVE_SELF,
+            'IN_UNMOUNT': self.on_IN_UNMOUNT,
+            'IN_Q_OVERFLOW': self.on_IN_Q_OVERFLOW,
+            'IN_IGNORED': self.on_IN_IGNORED,
+            'IN_ONLYDIR': self.on_IN_ONLYDIR,
+            'IN_DONT_FOLLOW': self.on_IN_DONT_FOLLOW,
+            'IN_MASK_ADD': self.on_IN_MASK_ADD,
+            'IN_ISDIR': self.on_IN_ISDIR,
+            'IN_ONESHOT': self.on_IN_ONESHOT
         }
 
-        initial_watch_path = path.abspath(initial_watch_path)
-        initial_watch_path = path.normpath(initial_watch_path)
+        initial_watch_path = path.normpath(path.abspath(initial_watch_path))
 
         self.i = inotify.adapters.Inotify()
         self.i.add_watch(initial_watch_path)
@@ -52,14 +43,8 @@ class InotifyFileMonitorBase(object):
                     (header, type_names, watch_path, filename) = base_event
                     mask = header.mask
                     file_path = path.join(watch_path, filename)
-                    inotify_event = InotifyEvent(mask,file_path, watch_path)
+                    inotify_event = InotifyEvent(mask, file_path, watch_path)
                     self.__process_event(inotify_event)
-
-                    #print mask.mask
-                    #print mask.readable_mask
-                    #print mask.human_readable_mask
-                    #print file_path.path
-                   
         finally:
             self.i.remove_watch('./test')
 
@@ -130,11 +115,3 @@ class InotifyFileMonitorBase(object):
 
     def on_IN_ONESHOT(self, inotify_event):
         pass
-
-
-def main():
-    fm = InotifyFileMonitorBase('./test')
-
-
-if __name__ == '__main__':
-    main()
