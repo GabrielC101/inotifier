@@ -1,5 +1,5 @@
-from inotifier import InotifyFileMonitorBase
-from is_file_open import is_file_open
+from inotifier import InotifierBase
+from autorenamer.utils import is_file_open
 from twisted.python import filepath
 import os
 import sys
@@ -30,7 +30,7 @@ def log_inotify_event(inotify_event):
         event_log_dict[inode_changed].append((file_changed, type_of_change))
 
 
-class Renamer(InotifyFileMonitorBase):
+class Renamer(InotifierBase):
 
     def all_events(self, inotify_event):
         if inotify_event.file_changed.exists():
@@ -86,6 +86,12 @@ class Renamer(InotifyFileMonitorBase):
         print new_path.path
         if new_path.exists():
             changed_list.append(new_path.getInodeNumber())
+
+
+class Printer(InotifierBase):
+    def all_events(self, inotify_event):
+        print(inotify_event.mask.human_readable_mask)
+        print(inotify_event.file_changed)
 
 
 def main(folder_to_monitor):
