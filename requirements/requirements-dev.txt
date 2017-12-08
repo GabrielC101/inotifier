@@ -5,16 +5,12 @@
 #    pip-compile --output-file requirements/requirements-dev.txt requirements/requirements-dev.in
 #
 
-attrs==17.3.0
-automat==0.6.0
 backports.shutil-get-terminal-size==1.0.0  # via ipython
 click==6.7                # via pip-tools
-constantly==15.1.0
 decorator==4.1.2          # via ipython, traitlets
 enum34==1.1.6             # via traitlets
+filepath==0.1
 first==2.0.1              # via pip-tools
-hyperlink==17.3.1
-incremental==17.5.0
 inotify==0.2.8
 ipython-genutils==0.2.0   # via traitlets
 ipython==5.5
@@ -28,8 +24,6 @@ ptyprocess==0.5.2         # via pexpect
 pygments==2.2.0           # via ipython
 scandir==1.6              # via pathlib2
 simplegeneric==0.8.1      # via ipython
-six==1.11.0
+six==1.11.0               # via pathlib2, pip-tools, prompt-toolkit, traitlets
 traitlets==4.3.2          # via ipython
-twisted==17.9.0
 wcwidth==0.1.7            # via prompt-toolkit
-zope.interface==4.4.3
