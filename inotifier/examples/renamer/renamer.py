@@ -9,7 +9,7 @@ from time import sleep
 from twisted.python.filepath import FilePath
 
 from inotifier.inotifier import InotifierBase
-from inotifier.examples.renamer.utils import is_file_open, lookup_inode
+from inotifier.utils import is_file_open, lookup_inode
 
 
 class RenamerBase(InotifierBase):
@@ -17,8 +17,6 @@ class RenamerBase(InotifierBase):
     def __init__(self, *args, **kwargs):
         self.sep = '---'
         self.event_log_dict = {}
-        self.created_dict = {}
-        self.closed_write_list = []
         self.changed_list = []
 
         super(RenamerBase, self).__init__(*args, **kwargs)
@@ -56,26 +54,6 @@ class Renamer(RenamerBase):
         if inotify_event.file_changed.exists():
             self.log_inotify_event(inotify_event)
 
-    def on_IN_CREATE(self, inotify_event):
-
-        self.created_dict[inotify_event.file_changed.getInodeNumber()] = \
-            str(inotify_event.time.year) + '-' + \
-            str(inotify_event.time.month) + '-' + \
-            str(inotify_event.time.day) + '---' + \
-            str(inotify_event.time.hour) + '-' + \
-            str(inotify_event.time.minute) + '-' + \
-            str(inotify_event.time.second)
-
-    def on_IN_CLOSE_WRITE(self, inotify_event):
-        if inotify_event.file_changed.exists():
-            self.closed_write_list.append(inotify_event.file_changed.getInodeNumber())
-
-    def on_IN_MOVED_FROM(self, inotify_event):
-        pass
-
-    def on_IN_MOVED_TO(self, inotify_event):
-        pass
-
     def on_IN_ATTRIB(self, inotify_event):
         if inotify_event.file_changed.exists():
             inode_num = inotify_event.file_changed.getInodeNumber()
@@ -86,12 +64,14 @@ class Renamer(RenamerBase):
                     file_name = inotify_event.file_changed.path
 
                     if inode_num not in self.changed_list:
-                        while t:
+
+                        file_open = True
+                        while file_open:
                             if not is_file_open(file_name):
                                 sleep(5)
                                 file_name = lookup_inode(inode_num, inotify_event.watch_path.path).path
-                                self.rename(file_name, self.created_dict[inode_num])
-                                return
+                                self.rename(file_name, inotify_event.initiate_time_as_string())
+                                file_open = False
 
 
 def main(folder_to_monitor):

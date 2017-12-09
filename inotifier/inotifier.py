@@ -5,6 +5,7 @@ from os import path
 import inotify.adapters
 
 from inotifier.events import InotifyEvent
+from inotifier.utils import lookup_inode
 
 
 class InotifierBase(object):
