@@ -4,8 +4,7 @@ from os import path
 
 import inotify.adapters
 
-from inotifier.events import InotifyEvent
-from inotifier.utils import lookup_inode
+from inotifier.models.events import InotifyEvent
 
 
 class InotifierBase(object):
@@ -34,10 +33,12 @@ class InotifierBase(object):
             'IN_ONESHOT': self.on_IN_ONESHOT
         }
 
-        initial_watch_path = path.normpath(path.abspath(initial_watch_path))
+        self.initial_watch_path = path.normpath(path.abspath(initial_watch_path))
+        self.i = None
 
+    def run(self):
         self.i = inotify.adapters.Inotify()
-        self.i.add_watch(initial_watch_path)
+        self.i.add_watch(self.initial_watch_path)
         try:
             for base_event in self.i.event_gen():
                 if base_event is not None:

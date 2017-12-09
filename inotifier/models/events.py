@@ -9,7 +9,6 @@ from os.path import join
 from twisted.python.filepath import FilePath
 
 from inotifier.models.masks import InotifyMask
-from inotifier.utils import lookup_inode
 
 
 class InotifyEvent(object):
@@ -26,19 +25,13 @@ class InotifyEvent(object):
         self.file_changed = FilePath(file_changed)
         self.watch_path = FilePath(watch_path)
         self.time = datetime.datetime.now()
-        # self.inode_num = self.file_changed.getInodeNumber()
 
-    # def original_path_exists(self):
-    #     return self.file_changed.exists()
     @property
     def inode_num(self):
         try:
             return self.file_changed.getInodeNumber()
         except OSError as e:
             return None
-
-    # def find_current_path(self):
-        # self.inode_num = lookup_inode(self.inode_num, self.file_changed.dirname())
         
     def initiate_time_as_string(self):
         template = "{}-{}-{}---{}-{}-{}"
