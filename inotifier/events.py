@@ -33,12 +33,12 @@ class InotifyEvent(object):
     @property
     def inode_num(self):
         try:
-            self.file_changed.getInodeNumber()
+            return self.file_changed.getInodeNumber()
         except OSError as e:
-            raise Exception('File {} does not exist any more.'.format(self.file_changed.path))
+            return None
 
-    def find_current_path(self):
-        self.inode_num = lookup_inode(self.inode_num, self.file_changed.dirname())
+    # def find_current_path(self):
+        # self.inode_num = lookup_inode(self.inode_num, self.file_changed.dirname())
         
     def initiate_time_as_string(self):
         template = "{}-{}-{}---{}-{}-{}"

@@ -41,12 +41,16 @@ class RenamerBase(InotifierBase):
         new_path = FilePath(par.path + '/' + created_time_string + self.sep + b_name)
 
         os.rename(file_name.path, new_path.path)
-
-        print(file_name.path)
-        print(new_path.path)
+        template = '{} renamed to {}'
+        print(
+            template.format(file_name.path, new_path.path)
+        )
         if new_path.exists():
             self.changed_list.append(new_path.getInodeNumber())
-
+        print(
+            "files changed: {}".format(
+            self.changed_list)
+        )
 
 class Renamer(RenamerBase):
 
