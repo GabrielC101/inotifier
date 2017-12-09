@@ -4,11 +4,12 @@ from __future__ import absolute_import, print_function
 
 import os
 from sys import argv
+from time import sleep
 
 from twisted.python.filepath import FilePath
 
 from inotifier.inotifier import InotifierBase
-from inotifier.examples.renamer.utils import is_file_open
+from inotifier.examples.renamer.utils import is_file_open, lookup_inode
 
 
 class RenamerBase(InotifierBase):
@@ -87,6 +88,8 @@ class Renamer(RenamerBase):
                     if inode_num not in self.changed_list:
                         while t:
                             if is_file_open(file_name) == False:
+                                sleep(5)
+                                file_name = lookup_inode(inode_num, inotify_event.watch_path.path).path
                                 self.rename(file_name, self.created_dict[inode_num])
                                 return
 

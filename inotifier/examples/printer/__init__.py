@@ -7,5 +7,8 @@ from inotifier.inotifier import InotifierBase
 
 class Printer(InotifierBase):
     def all_events(self, inotify_event):
-        print(inotify_event.mask.human_readable_mask)
-        print(inotify_event.file_changed)
+        template = "{} changed by {} events".format(
+            inotify_event.file_changed.path,
+            inotify_event.mask.human_readable_mask
+        )
+        print(template)

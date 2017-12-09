@@ -17,13 +17,13 @@ def lookup_inode(inode, rootdir='.'):
             absolute_path = abspath(join(folder, f))
             ap_inode = stat(absolute_path).st_ino
             if inode == ap_inode:
-                return absolute_path
+                return FilePath(absolute_path)
 
         for s in subs:
             absolute_path = path.abspath(join(folder, s))
             ap_inode = stat(absolute_path).st_ino
             if inode == ap_inode:
-                return absolute_path
+                return FilePath(absolute_path)
 
 
 def is_file_open(file='./test/'):
