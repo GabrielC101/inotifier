@@ -5,7 +5,7 @@ from __future__ import absolute_import, print_function
 import os
 from sys import argv
 
-from filepath import FilePath
+from twisted.python.filepath import FilePath
 
 from inotifier.inotifier import InotifierBase
 from inotifier.examples.renamer.utils import is_file_open
