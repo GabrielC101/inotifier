@@ -10,7 +10,7 @@ from inotifier.events import InotifyEvent
 class InotifierBase(object):
     def __init__(self, initial_watch_path='.'):
 
-        self._event_method_dict ={
+        self._event_method_dict = {
             'IN_ACCESS': self.on_IN_ACCESS,
             'IN_MODIFY': self.on_IN_MODIFY,
             'IN_ATTRIB': self.on_IN_ATTRIB,
