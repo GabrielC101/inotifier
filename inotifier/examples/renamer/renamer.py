@@ -59,7 +59,6 @@ class Renamer(RenamerBase):
             inode_num = inotify_event.file_changed.getInodeNumber()
             if inode_num not in self.changed_list:
                 if '---' not in inotify_event.file_changed.path:
-                    t = True
 
                     file_name = inotify_event.file_changed.path
 
