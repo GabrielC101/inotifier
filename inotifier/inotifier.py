@@ -40,10 +40,7 @@ class InotifierBase(object):
         try:
             for base_event in self.i.event_gen():
                 if base_event is not None:
-                    (header, type_names, watch_path, filename) = base_event
-                    mask = header.mask
-                    file_path = path.join(watch_path, filename)
-                    inotify_event = InotifyEvent(mask, file_path, watch_path)
+                    inotify_event = InotifyEvent.build_from_inotify_adapter(base_event)
                     self.__process_event(inotify_event)
         finally:
             self.i.remove_watch('./test')
