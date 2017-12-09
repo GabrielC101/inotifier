@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-#from /usr/src/linux/include/linux/inotify.h
+# from /usr/src/linux/include/linux/inotify.h
 
 IN_ACCESS = 0x00000001L         # File was accessed
 IN_MODIFY = 0x00000002L         # File was modified

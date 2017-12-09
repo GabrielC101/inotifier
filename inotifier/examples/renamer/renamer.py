@@ -59,12 +59,12 @@ class Renamer(RenamerBase):
     def on_IN_CREATE(self, inotify_event):
 
         self.created_dict[inotify_event.file_changed.getInodeNumber()] = \
-        str(inotify_event.time.year) + '-' + \
-        str(inotify_event.time.month) + '-' + \
-        str(inotify_event.time.day) + '---' + \
-        str(inotify_event.time.hour) + '-' + \
-        str(inotify_event.time.minute) + '-' + \
-        str(inotify_event.time.second)
+            str(inotify_event.time.year) + '-' + \
+            str(inotify_event.time.month) + '-' + \
+            str(inotify_event.time.day) + '---' + \
+            str(inotify_event.time.hour) + '-' + \
+            str(inotify_event.time.minute) + '-' + \
+            str(inotify_event.time.second)
 
     def on_IN_CLOSE_WRITE(self, inotify_event):
         if inotify_event.file_changed.exists():
@@ -87,7 +87,7 @@ class Renamer(RenamerBase):
 
                     if inode_num not in self.changed_list:
                         while t:
-                            if is_file_open(file_name) == False:
+                            if not is_file_open(file_name):
                                 sleep(5)
                                 file_name = lookup_inode(inode_num, inotify_event.watch_path.path).path
                                 self.rename(file_name, self.created_dict[inode_num])
@@ -95,7 +95,7 @@ class Renamer(RenamerBase):
 
 
 def main(folder_to_monitor):
-    fm = Renamer(folder_to_monitor)
+    Renamer(folder_to_monitor)
 
 
 if __name__ == '__main__':

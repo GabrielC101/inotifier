@@ -17,6 +17,7 @@ setup(
     url='https://github.com/GabrielC101/filer',
     license='Apache2',
     author='Gabriel Curio',
+    install_requires=['inotify', 'twisted', 'psutil'],
     extras_requirements={'examples':
                              ['inotifier.examples',
                               'inotifier.examples.printer',

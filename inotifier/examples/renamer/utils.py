@@ -26,13 +26,13 @@ def lookup_inode(inode, rootdir='.'):
                 return FilePath(absolute_path)
 
 
-def is_file_open(file='./test/'):
+def is_file_open(file_path='./test/'):
     """Check if a file is currently open."""
-    file = FilePath(file)
+    file_path = FilePath(file_path)
 
     process_list = get_open_files()
     for l in process_list:
-        if file.path in l:
+        if file_path.path in l:
             return True
     return False
 
