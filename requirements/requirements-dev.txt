@@ -9,9 +9,11 @@ automat==0.6.0
 backports.shutil-get-terminal-size==1.0.0  # via ipython
 click==6.7                # via pip-tools
 constantly==15.1.0
+coverage==4.4.2
 decorator==4.1.2          # via ipython, traitlets
 enum34==1.1.6             # via traitlets
 first==2.0.1              # via pip-tools
+funcsigs==1.0.2           # via pytest
 hyperlink==17.3.1
 incremental==17.5.0
 inotify==0.2.8
@@ -21,14 +23,19 @@ pathlib2==2.3.0           # via ipython, pickleshare
 pexpect==4.3.0            # via ipython
 pickleshare==0.7.4        # via ipython
 pip-tools==1.11.0
+pluggy==0.6.0             # via pytest, tox
 prompt-toolkit==1.0.15    # via ipython
 psutil==5.4.2
 ptyprocess==0.5.2         # via pexpect
+py==1.5.2                 # via pytest, tox
 pygments==2.2.0           # via ipython
+pytest==3.3.1
 scandir==1.6              # via pathlib2
 simplegeneric==0.8.1      # via ipython
 six==1.11.0
+tox==2.9.1
 traitlets==4.3.2          # via ipython
 twisted==17.9.0
+virtualenv==15.1.0        # via tox
 wcwidth==0.1.7            # via prompt-toolkit
 zope.interface==4.4.3
