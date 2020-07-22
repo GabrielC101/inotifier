@@ -1,4 +1,4 @@
-from inotify.constants import *
+from inotify import constants
 
 class ReadableDict:
     def __getitem__(self, key):
@@ -9,26 +9,26 @@ readable_dict = ReadableDict()
 
 
 _FLAG_TO_HUMAN = [
-    (IN_ACCESS, 'access'),
-    (IN_MODIFY, 'modify'),
-    (IN_ATTRIB, 'attrib'),
-    (IN_CLOSE_WRITE, 'close_write'),
-    (IN_CLOSE_NOWRITE, 'close_nowrite'),
-    (IN_OPEN, 'open'),
-    (IN_MOVED_FROM, 'moved_from'),
-    (IN_MOVED_TO, 'moved_to'),
-    (IN_CREATE, 'create'),
-    (IN_DELETE, 'delete'),
-    (IN_DELETE_SELF, 'delete_self'),
-    (IN_MOVE_SELF, 'move_self'),
-    (IN_UNMOUNT, 'unmount'),
-    (IN_Q_OVERFLOW, 'queue_overflow'),
-    (IN_IGNORED, 'ignored'),
-    (IN_ONLYDIR, 'only_dir'),
-    (IN_DONT_FOLLOW, 'dont_follow'),
-    (IN_MASK_ADD, 'mask_add'),
-    (IN_ISDIR, 'is_dir'),
-    (IN_ONESHOT, 'one_shot')
+    (constants.IN_ACCESS, 'access'),
+    (constants.IN_MODIFY, 'modify'),
+    (constants.IN_ATTRIB, 'attrib'),
+    (constants.IN_CLOSE_WRITE, 'close_write'),
+    (constants.IN_CLOSE_NOWRITE, 'close_nowrite'),
+    (constants.IN_OPEN, 'open'),
+    (constants.IN_MOVED_FROM, 'moved_from'),
+    (constants.IN_MOVED_TO, 'moved_to'),
+    (constants.IN_CREATE, 'create'),
+    (constants.IN_DELETE, 'delete'),
+    (constants.IN_DELETE_SELF, 'delete_self'),
+    (constants.IN_MOVE_SELF, 'move_self'),
+    (constants.IN_UNMOUNT, 'unmount'),
+    (constants.IN_Q_OVERFLOW, 'queue_overflow'),
+    (constants.IN_IGNORED, 'ignored'),
+    (constants.IN_ONLYDIR, 'only_dir'),
+    (constants.IN_DONT_FOLLOW, 'dont_follow'),
+    (constants.IN_MASK_ADD, 'mask_add'),
+    (constants.IN_ISDIR, 'is_dir'),
+    (constants.IN_ONESHOT, 'one_shot')
 ]
 
 
@@ -46,7 +46,7 @@ class InotifyMask:
         s = []
         for k, v in _FLAG_TO_HUMAN:
             if k & mask:
-                s.append(readable_dict[MASK_LOOKUP[k]])
+                s.append(readable_dict[constants.MASK_LOOKUP[k]])
         return s
 
     @property
@@ -58,7 +58,7 @@ class InotifyMask:
         s = []
         for k, v in _FLAG_TO_HUMAN:
             if k & self.mask:
-                s.append(MASK_LOOKUP[k])
+                s.append(constants.MASK_LOOKUP[k])
         return s
 
     def as_string(self):
