@@ -1,5 +1,6 @@
 from inotify import constants
 
+
 class ReadableDict:
     def __getitem__(self, key):
         return key.lower()[3:]
