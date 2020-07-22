@@ -1,17 +1,11 @@
-#!/usr/bin/env python
-
-from __future__ import absolute_import, print_function
-
 import datetime
-
 from os.path import join
 
-from twisted.python.filepath import FilePath
-
 from inotifier.models.masks import InotifyMask
+from inotifier.models.path import Path
 
 
-class InotifyEvent(object):
+class InotifyEvent:
 
     @classmethod
     def build_from_inotify_adapter(cls, base_event):
@@ -22,17 +16,17 @@ class InotifyEvent(object):
 
     def __init__(self, mask, file_changed, watch_path):
         self.mask = InotifyMask(mask)
-        self.file_changed = FilePath(file_changed)
-        self.watch_path = FilePath(watch_path)
-        self.time = datetime.datetime.now()
+        self.file_changed: Path = Path(file_changed)
+        self.watch_path: Path = Path(watch_path)
+        self.time: datetime.datetime = datetime.datetime.now()
 
     @property
-    def inode_num(self):
+    def inode_number(self):
         try:
-            return self.file_changed.getInodeNumber()
-        except OSError as e:
+            return self.file_changed.inode_number
+        except FileNotFoundError:
             return None
-        
+
     def initiate_time_as_string(self):
         template = "{}-{}-{}---{}-{}-{}"
         return template.format(
@@ -43,4 +37,3 @@ class InotifyEvent(object):
             self.time.minute,
             self.time.second
         )
-

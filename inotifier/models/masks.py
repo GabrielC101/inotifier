@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-
 # from /usr/src/linux/include/linux/inotify.h
 
 IN_ACCESS = 0x00000001         # File was accessed
@@ -103,7 +100,7 @@ _FLAG_TO_HUMAN = [
 ]
 
 
-class InotifyMask(object):
+class InotifyMask:
 
     def __init__(self, mask):
         self.mask = mask
