@@ -18,4 +18,4 @@ isort:
 	sh -c "isort --skip-glob=.tox --recursive . "
 
 lint:
-	flake8 --exclude=.tox
+	flake8 --exclude=.tox,venv

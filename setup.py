@@ -18,11 +18,13 @@ setup(
     license='Apache2',
     author='Gabriel Curio',
     install_requires=['inotify', 'twisted', 'psutil'],
-    extras_requirements={'examples':
-                             ['inotifier.examples',
-                              'inotifier.examples.printer',
-                              'inotifier.examples.renamer'
-                              ]
-                         },
+    extras_requirements={
+        'examples':
+        [
+            'inotifier.examples',
+            'inotifier.examples.printer',
+            'inotifier.examples.renamer'
+        ]
+    },
     description='Inotify Event Handler'
 )

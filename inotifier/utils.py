@@ -1,15 +1,12 @@
-#!/usr/bin/env python
-
-from __future__ import absolute_import, print_function
-
-from os import walk, stat, path
+from os import path, stat, walk
 from os.path import abspath, join
 
 import psutil
-from twisted.python.filepath import FilePath
+
+from inotifier.models.path import Path
 
 
-def lookup_inode(inode, rootdir='.'):
+def lookup_inode(inode, rootdir='.') -> Path:
     """Find a file path for an inode."""
     for folder, subs, files in walk(rootdir):
 
@@ -17,39 +14,31 @@ def lookup_inode(inode, rootdir='.'):
             absolute_path = abspath(join(folder, f))
             ap_inode = stat(absolute_path).st_ino
             if inode == ap_inode:
-                return FilePath(absolute_path)
+                return Path(absolute_path).absolute()
 
         for s in subs:
             absolute_path = path.abspath(join(folder, s))
             ap_inode = stat(absolute_path).st_ino
             if inode == ap_inode:
-                return FilePath(absolute_path)
+                return Path(absolute_path).absolute()
 
 
 def is_file_open(file_path='./test/'):
     """Check if a file is currently open."""
-    file_path = FilePath(file_path)
+    file_path = Path(file_path)
 
-    process_list = get_open_files()
-    for l in process_list:
-        if file_path.path in l:
+    process_list = _get_open_files()
+    for processes in process_list:
+        if file_path.absolute() in processes:
             return True
     return False
 
 
-def get_open_files():
+def _get_open_files():
     """Returns a list of open files."""
     for proc in psutil.process_iter():
         try:
             open_file = proc.open_files()
-        except Exception as e:
+        except Exception:
             open_file = []
         return [o.path for o in open_file]
-
-
-def monitor_is_file_open(file_path):
-    """Return a generator that monitors whether a file is open."""
-    t = True
-    while t:
-        i = is_file_open(file_path)
-        yield i
