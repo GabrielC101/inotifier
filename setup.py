@@ -22,8 +22,8 @@ setup(
         'examples':
         [
             'inotifier.examples',
-            'inotifier.examples.printer',
-            'inotifier.examples.renamer'
+            'inotifier.examples.printer.printer',
+            'inotifier.examples.renamer.renamer'
         ]
     },
     description='Inotify Event Handler'
