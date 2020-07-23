@@ -7,6 +7,11 @@ from inotifier.models.events import InotifyEvent
 
 
 class Printer(InotifierBase):
+
+    def __init__(self, *args, **kwargs):
+        kwargs['include_dirs'] = False
+        super(Printer, self).__init__(*args, **kwargs)
+
     def all_events(self, inotify_event: InotifyEvent):
         template = "{} changed by {} events".format(
             str(inotify_event.file_changed),

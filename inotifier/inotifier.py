@@ -8,8 +8,8 @@ from inotifier.models.events import InotifyEvent
 
 
 class InotifierBase:
-    def __init__(self, initial_watch_path: str = '.'):
-
+    def __init__(self, initial_watch_path: str = '.', include_dirs=True):
+        self.include_dirs = include_dirs
         self.initial_watch_path: str = path.normpath(
             path.abspath(initial_watch_path)
         )
@@ -21,10 +21,13 @@ class InotifierBase:
         try:
             for base_event in self.i.event_gen():
                 if base_event is not None:
-                    inotify_event = InotifyEvent.build_from_inotify_adapter(
+                    inotify_event: InotifyEvent = InotifyEvent.build_from_inotify_adapter(
                         base_event
                     )
-                    self.__process_event(inotify_event)
+                    if self.include_dirs or (
+                            not self.include_dirs and 'isdir' not in inotify_event.mask.human_readable_mask
+                    ):
+                        self.__process_event(inotify_event)
                 sleep(.1)
         finally:
             # Cleans up watches via __del__ method.
