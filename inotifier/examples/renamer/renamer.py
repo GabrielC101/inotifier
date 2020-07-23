@@ -6,7 +6,7 @@ from time import sleep
 
 from inotifier.inotifier import InotifierBase
 from inotifier.models.path import Path
-from inotifier.utils import is_file_open, lookup_inode
+from inotifier.examples.renamer.utils import is_file_open, lookup_inode
 
 
 class RenamerBase(InotifierBase):

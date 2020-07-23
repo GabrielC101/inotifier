@@ -1,8 +1,9 @@
 from os import path, stat, walk
 from os.path import abspath, join
-
-import psutil
-
+try:
+    import psutil
+except (ImportError, NameError) as e:
+    raise ImportError('Must install psutil to use renamer example!') from e
 from inotifier.models.path import Path
 
 

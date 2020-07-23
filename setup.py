@@ -17,7 +17,7 @@ setup(
     url='https://github.com/GabrielC101/inotifier',
     license='Apache2',
     author='Gabriel Curio',
-    install_requires=['inotify', 'psutil'],
+    install_requires=['inotify'],
     extras_requirements={
         'examples':
         [
@@ -25,6 +25,9 @@ setup(
             'inotifier.examples.printer.printer',
             'inotifier.examples.renamer.renamer'
         ]
+    },
+    extras_require={
+        "examples": ["psutil"],
     },
     description='Inotify Event Handler'
 )
