@@ -1,6 +1,6 @@
 import datetime
 from os.path import join
-
+from uuid import uuid4
 from inotifier.models.masks import InotifyMask
 from inotifier.models.path import Path
 
@@ -15,7 +15,8 @@ class InotifyEvent:
         return cls(mask, file_path, watch_path)
 
     def __init__(self, mask, file_changed, watch_path):
-        self.mask = InotifyMask(mask)
+        self.id = str(uuid4())
+        self.mask: InotifyMask = InotifyMask(mask)
         self.file_changed: Path = Path(file_changed)
         self.watch_path: Path = Path(watch_path)
         self.time: datetime.datetime = datetime.datetime.now()
@@ -28,12 +29,5 @@ class InotifyEvent:
             return None
 
     def initiate_time_as_string(self):
-        template = "{}-{}-{}---{}-{}-{}"
-        return template.format(
-            self.time.year,
-            self.time.month,
-            self.time.day,
-            self.time.hour,
-            self.time.minute,
-            self.time.second
-        )
+        return self.time.isoformat().replace(':', '-').split('.')[0]
+

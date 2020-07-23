@@ -14,16 +14,16 @@ setup(
         'Programming Language :: Python :: 2'
     ],
     packages=['tests', 'inotifier'],
-    url='https://github.com/GabrielC101/filer',
+    url='https://github.com/GabrielC101/inotifier',
     license='Apache2',
     author='Gabriel Curio',
-    install_requires=['inotify', 'twisted', 'psutil'],
+    install_requires=['inotify', 'psutil'],
     extras_requirements={
         'examples':
         [
             'inotifier.examples',
-            'inotifier.examples.printer',
-            'inotifier.examples.renamer'
+            'inotifier.examples.printer.printer',
+            'inotifier.examples.renamer.renamer'
         ]
     },
     description='Inotify Event Handler'

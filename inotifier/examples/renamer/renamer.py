@@ -15,7 +15,7 @@ class RenamerBase(InotifierBase):
         self.sep = '---'
         self.event_log_dict = {}
         self.changed_list = []
-
+        kwargs['include_dirs'] = False
         super(RenamerBase, self).__init__(*args, **kwargs)
 
     def log_inotify_event(self, inotify_event):

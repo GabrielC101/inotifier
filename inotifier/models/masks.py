@@ -37,16 +37,16 @@ class InotifyMask:
 
     def __init__(self, mask):
         self.mask = mask
-        self.human_readable_mask = self.human_readable_mask(self.mask)
 
-    def human_readable_mask(self, mask):
+    @property
+    def human_readable_mask(self):
         """
         Auxiliary function that converts an hexadecimal mask into a series
         of human readable flags.
         """
         s = []
         for k, v in _FLAG_TO_HUMAN:
-            if k & mask:
+            if k & self.mask:
                 s.append(readable_dict[constants.MASK_LOOKUP[k]])
         return s
 
