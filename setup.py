@@ -14,7 +14,7 @@ setup(
         'Programming Language :: Python :: 2'
     ],
     packages=['tests', 'inotifier'],
-    url='https://github.com/GabrielC101/filer',
+    url='https://github.com/GabrielC101/inotifier',
     license='Apache2',
     author='Gabriel Curio',
     install_requires=['inotify', 'psutil'],
