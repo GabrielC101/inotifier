@@ -8,10 +8,10 @@ setup(
         'Intended Audience :: System Administrators',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.7',
         'Topic :: System :: Filesystems',
         'Topic :: System :: Operating System Kernels :: Linux',
-        'Programming Language :: Python :: 2'
+        'Programming Language :: Python :: 3'
     ],
     packages=['tests', 'inotifier'],
     url='https://github.com/GabrielC101/inotifier',
