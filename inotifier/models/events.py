@@ -28,12 +28,5 @@ class InotifyEvent:
             return None
 
     def initiate_time_as_string(self):
-        template = "{}-{}-{}---{}-{}-{}"
-        return template.format(
-            self.time.year,
-            self.time.month,
-            self.time.day,
-            self.time.hour,
-            self.time.minute,
-            self.time.second
-        )
+        return self.time.isoformat().replace(':', '-').split('.')[0]
+
